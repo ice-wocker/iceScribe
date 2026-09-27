@@ -12,6 +12,7 @@ public final class Prefs {
     private static final String K_LANG = "lang";
     private static final String K_THREADS = "threads";
     private static final String K_TRANSLATE = "translate";
+    private static final String K_BUNDLED = "bundled_ready";
 
     private final SharedPreferences sp;
 
@@ -50,5 +51,14 @@ public final class Prefs {
 
     public void setTranslate(boolean b) {
         sp.edit().putBoolean(K_TRANSLATE, b).apply();
+    }
+
+    /** 内置模型是否已经解包过。只做一次：用户主动删掉后不再自动解包回来。 */
+    public boolean bundledReady() {
+        return sp.getBoolean(K_BUNDLED, false);
+    }
+
+    public void setBundledReady(boolean b) {
+        sp.edit().putBoolean(K_BUNDLED, b).apply();
     }
 }

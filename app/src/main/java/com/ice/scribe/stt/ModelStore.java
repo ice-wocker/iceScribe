@@ -30,8 +30,10 @@ public final class ModelStore {
 
     private static final String TAG = "ModelStore";
     private static final String DIR = "models";
-    /** 小于 1MB 的「模型」肯定是错的（最小 tiny 也有 75MB） */
+    /** 小于 1MB 的「模型」肯定是错的（最小的量化 tiny 也有 30MB） */
     private static final long MIN_BYTES = 1024L * 1024L;
+    /** 随 APK 一起打包的内置模型，让 App 装完就能用，不需要用户自己准备。 */
+    public static final String BUNDLED_ASSET = "models/ggml-base-q5_1.bin";
 
     public static final class Model {
         public final File file;
@@ -153,6 +155,46 @@ public final class ModelStore {
             throw new IOException("文件内容不像模型，可能选错了文件");
         }
         Log.i(TAG, "导入完成: " + dst.getName() + " " + humanSize(copied));
+        return dst;
+    }
+
+    /** 内置模型解包后的文件名（从 assets 路径里取末段）。 */
+    public static String bundledFileName() {
+        int slash = BUNDLED_ASSET.lastIndexOf('/');
+        return slash >= 0 ? BUNDLED_ASSET.substring(slash + 1) : BUNDLED_ASSET;
+    }
+
+    /**
+     * 把 assets 里的内置模型解包到内部目录。
+     *
+     * <p>whisper.cpp 只接受文件路径，没法直接读 assets，所以首次启动要落一份到磁盘。
+     * 解包后它就是一个普通模型文件：会被 {@link #list()} 扫到，用户也能删除。
+     */
+    public File extractBundled(Progress progress) throws IOException {
+        File dir = internalDir();
+        if (!dir.exists() && !dir.mkdirs()) throw new IOException("无法创建模型目录");
+        File dst = new File(dir, bundledFileName());
+
+        long total = -1;
+        long copied = 0;
+        try (InputStream in = ctx.getAssets().open(BUNDLED_ASSET);
+             FileOutputStream out = new FileOutputStream(dst)) {
+            // assets 的 available() 就是整份大小，够进度条用了
+            total = in.available();
+            byte[] buf = new byte[1 << 20];
+            int n;
+            while ((n = in.read(buf)) > 0) {
+                out.write(buf, 0, n);
+                copied += n;
+                if (progress != null) progress.onProgress(copied, total);
+            }
+            out.flush();
+        } catch (IOException e) {
+            // 解包失败就别留半截文件，否则列表里会多一个永远加载不了的模型
+            dst.delete();
+            throw e;
+        }
+        Log.i(TAG, "内置模型已解包: " + dst.getName() + " " + humanSize(copied));
         return dst;
     }
 

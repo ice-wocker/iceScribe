@@ -12,19 +12,19 @@
 [![whisper.cpp](https://img.shields.io/badge/whisper.cpp-v1.9.4-000000)](https://github.com/ggml-org/whisper.cpp)
 [![无网络权限](https://img.shields.io/badge/%E6%9D%83%E9%99%90-%E4%B8%8D%E7%94%B3%E8%AF%B7%20INTERNET-22D3EE)](#隐私)
 
-[下载安装](#下载安装) · [功能](#功能) · [怎么用](#怎么用) · [模型从哪来](#模型从哪来) · [技术亮点](#技术亮点) · [隐私](#隐私) · [已知限制](#已知限制) · [构建](#构建)
+[下载安装](#下载安装) · [功能](#功能) · [怎么用](#怎么用) · [模型](#模型) · [技术亮点](#技术亮点) · [隐私](#隐私) · [已知限制](#已知限制) · [构建](#构建)
 
 </div>
 
 ---
 
-一个干净的 Android 录音转文字 App：**whisper.cpp 内置在应用里**，把麦克风或已有音频转成文字，
+一个干净的 Android 录音转文字 App：**whisper.cpp 和模型都内置在应用里**，装完就能用；把麦克风或已有音频转成文字，
 模型在手机本地加载、推理也在本地跑。飞行模式下照样用。
 
 最直白的一条：**这个 App 没有申请网络权限**。装完可以在系统设置里点开权限列表看——只有麦克风，
 没有网络、没有存储、没有位置。录音和文字没有任何技术路径离开这台设备。
 
-> **当前版本 v0.1.0** · 纯 CPU 离线推理 · 不需要联网 · 不需要存储权限 · 不需要账号
+> **当前版本 v0.1.1** · 内置 whisper 模型，装完即用 · 纯 CPU 离线推理 · 不需要联网 · 不需要存储权限 · 不需要账号
 
 ---
 
@@ -78,7 +78,7 @@ CPU 线程数 2 / 3 / 4 / 6 / 8 任选，按机器核数给默认值。不同机
 </td></tr>
 <tr><td><b>模型管理</b></td><td>
 
-从文件选择器导入模型，也支持**数据线直接拷进应用目录**（两个目录都会被扫描）；长按可删除，列表里标出模型大小与所在目录。
+**已内置 `base` 量化模型（q5_1，约 57 MB）**，首装打开即自动解包加载，不用先去哪儿下模型；想更准可从文件选择器导入更大的模型，也支持**数据线直接拷进应用目录**（两个目录都会被扫描）；长按可删除，列表里标出模型大小与所在目录。
 
 </td></tr>
 </table>
@@ -87,26 +87,24 @@ CPU 线程数 2 / 3 / 4 / 6 / 8 任选，按机器核数给默认值。不同机
 
 ## 怎么用
 
-1. **装 App**，第一次打开会提示「还没有模型」。
-2. 点右上角 **导入模型**，选一个 `ggml-*.bin`（从哪来见下一节）。
-3. 回到首页，**点麦克风**开始说话，说完再点一下（变成方块就是停止）。
-4. 等进度条走完，文字就出现在下面了。改一改、复制、分享都行。
+1. **装 App**，第一次打开会自动解包内置模型（约 57 MB，几秒钟），完成后底部显示「模型已就绪」。
+2. **点麦克风**开始说话，说完再点一下（变成方块就是停止）。
+3. 等进度条走完，文字就出现在下面了。改一改、复制、分享都行。
 
-想转已有音频就点 **导入音频**；想换模型点右上角的按钮。
+想转已有音频就点 **导入音频**；想换成更准的模型点右上角的按钮。
 
 ---
 
-## 模型从哪来
+## 模型
 
-模型不内置（内置会让安装包变成几百 MB），也不在 App 里下载（因为没有网络权限）。
-用手机浏览器下一个 `.bin` 文件，再从 App 里导入即可。
+App **已经内置 `base` 量化模型（`ggml-base-q5_1.bin`，约 57 MB）**，装完直接能用，不需要先去哪儿下模型
+——因为没有网络权限，App 里也没法下载，内置是「开箱即用」的唯一办法。
 
-来源是 whisper.cpp 官方的 ggml 模型仓库：
+想更准可以自己换：用手机浏览器下一个 `.bin` 文件，再从 App 里导入即可。来源是 whisper.cpp 官方的 ggml 模型仓库：
 
 | 模型 | 体积 | 适合 |
 |---|---|---|
-| [ggml-tiny.bin](https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin) | 约 75 MB | 老机型，先跑通 |
-| [ggml-base.bin](https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin) | 约 142 MB | 日常速记，最快的一档 |
+| `ggml-base-q5_1.bin` | 约 57 MB | **已内置**，开箱即用 |
 | [ggml-small.bin](https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin) | 约 466 MB | **中文推荐**，速度和准确率的平衡点 |
 | [ggml-medium.bin](https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.bin) | 约 1.5 GB | 更准，适合旗舰机 |
 | [ggml-large-v3-turbo.bin](https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin) | 约 1.6 GB | 最准的一档 |
@@ -123,7 +121,8 @@ adb push ggml-small.bin /sdcard/Android/data/com.ice.scribe/files/models/
 
 ## 技术亮点
 
-- **whisper.cpp 静态编进应用**：NDK 27 + CMake 拉源码编译，只保留推理部分（关掉 examples / server / tests），单个 APK 约 1.7 MB + 4 MB 原生库。
+- **whisper.cpp 静态编进应用**：NDK 27 + CMake 拉源码编译，只保留推理部分（关掉 examples / server / tests）；代码与原生库合计不到 6 MB。
+- **内置模型，装完即用**：把 `ggml-base-q5_1.bin`（约 57 MB）打进 APK 的 assets，首次启动自动解包到应用目录并加载，不需要用户先去哪儿下模型、也不碰网络。模型以 Stored 方式原样打包（已量化的权重压缩不出收益）。
 - **纯 CPU 推理，不做无用的尝试**：ARM64 上关掉 GPU 与 llamafile 的 x86 专用内核，走 NEON 优化路径；`GGML_OPENMP` 关闭，避免在 Android 上引入不可用的运行时依赖。
 - **常数级内存**：录音侧边录边重采样落盘、转写侧按段流式读取，两处都不把整段音频堆在内存里，所以「录多久」只受存储限制，不受内存限制。
 - **跨段提示词衔接**：利用 whisper 的 `initial_prompt`，把上一段末尾九十来个字带进下一段，长录音的断句和专有名词不会被切断。
@@ -151,7 +150,8 @@ adb push ggml-small.bin /sdcard/Android/data/com.ice.scribe/files/models/
 ## 已知限制
 
 - **只打包 arm64-v8a**：32 位机型与部分模拟器装不上（32 位跑 whisper 没有实用性，砍掉能省一半体积）。
-- **模型要自己准备**：因为没有网络权限，App 内不提供下载。
+- **安装包 59 MB**：其中 57 MB 是内置模型。因为没有网络权限，模型没法改成运行时下载；首次启动还要把它解包到应用目录，安装后总占用约 116 MB（APK + 解包副本）。
+- **只有 base 一档内置**：想要更高准确率（尤其中文），自己导入 `small` 及以上。
 - **标点质量看模型**：中文标点由模型能力决定，`tiny` / `base` 可能标点较少，换 `small` 以上会明显变好。
 - **录音占空间**：16kHz 单声道约 1.9 MB / 分钟；应用会自动只保留最近 20 段录音，避免无声无息占满存储。
 - **首次编译慢**：原生库要从源码编译 whisper.cpp，第一次构建需要几分钟。
@@ -165,7 +165,7 @@ adb push ggml-small.bin /sdcard/Android/data/com.ice.scribe/files/models/
 | **[Releases](https://github.com/ice-wocker/iceScribe/releases)** | 推荐。CI 构建的正式签名 APK |
 | 自行构建 | 见下一节，几分钟就能出包 |
 
-要求：**Android 7.0（API 24）及以上**，**arm64 设备**。
+要求：**Android 7.0（API 24）及以上**，**arm64 设备**；安装包约 **59 MB**（已含内置模型），安装后总占用约 116 MB。
 
 ---
 

@@ -129,6 +129,7 @@ public final class MainActivity extends Activity {
         setupActions();
         renderHistory();
         restoreModel();
+        ensureBundledModel();
         tvEngine.setText(getString(R.string.engine_version, TranscribeEngine.engineVersion()));
         tvBottom.setText(engine.isReady()
                 ? getString(R.string.model_loaded) + " · " + engine.modelName()
@@ -303,6 +304,46 @@ public final class MainActivity extends Activity {
         });
     }
 
+    /**
+     * 首次启动把 assets 里的内置模型解包到内部目录并直接加载，做到装完就能用。
+     *
+     * <p>只做一次：用户主动删掉内置模型后不再自动解包回来（否则删了还会长出来）。
+     * 若已经存在别的模型（比如升级前导入过），就不再多存一份。
+     */
+    private void ensureBundledModel() {
+        if (engine.isReady() || prefs.bundledReady()) return;
+        if (!models.list().isEmpty()) {
+            prefs.setBundledReady(true);
+            return;
+        }
+        pb.setVisibility(View.VISIBLE);
+        pb.setIndeterminate(true);
+        tvBottom.setText(R.string.model_unpacking);
+        io.execute(() -> {
+            try {
+                File f = models.extractBundled((copied, total) -> ui.post(() -> {
+                    if (total > 0) {
+                        pb.setIndeterminate(false);
+                        pb.setProgress((int) (copied * 100 / total));
+                        tvBottom.setText(getString(R.string.model_unpacking) + " "
+                                + ModelStore.humanSize(copied) + " / " + ModelStore.humanSize(total));
+                    }
+                }));
+                prefs.setBundledReady(true);
+                ui.post(() -> {
+                    pb.setVisibility(View.GONE);
+                    loadModel(f.getAbsolutePath());
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "内置模型解包失败", e);
+                ui.post(() -> {
+                    pb.setVisibility(View.GONE);
+                    tvBottom.setText(getString(R.string.model_hint));
+                });
+            }
+        });
+    }
+
     private void pickModelFile() {
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -349,7 +390,7 @@ public final class MainActivity extends Activity {
 
     private void onRecordClicked() {
         if (!engine.isReady()) {
-            Toast.makeText(this, "先导入一个 whisper 模型再录音", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "模型还没准备好，稍等片刻或点右上角选择模型", Toast.LENGTH_LONG).show();
             showModelDialog();
             return;
         }
@@ -450,7 +491,7 @@ public final class MainActivity extends Activity {
 
     private void pickAudio() {
         if (!engine.isReady()) {
-            Toast.makeText(this, "先导入一个 whisper 模型", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "模型还没准备好，稍等片刻或点右上角选择模型", Toast.LENGTH_LONG).show();
             showModelDialog();
             return;
         }

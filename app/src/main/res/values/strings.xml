@@ -4,7 +4,8 @@
     <string name="app_sub">离线语音转写 · 数据不出手机</string>
 
     <!-- 模型 -->
-    <string name="model_hint">先导入一个 whisper 模型（.bin / .gguf），就能开始离线转写</string>
+    <string name="model_hint">首次启动会解包内置模型；也可导入更大的模型提升准确率</string>
+    <string name="model_unpacking">正在准备内置模型…</string>
     <string name="model_import">导入模型</string>
     <string name="model_switch">切换模型</string>
     <string name="model_loaded">模型已就绪</string>
