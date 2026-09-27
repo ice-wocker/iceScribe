@@ -1,0 +1,86 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'com.ice.scribe'
+    compileSdk 36
+    buildToolsVersion = "36.0.0"
+    ndkVersion "27.2.12479018"
+
+    defaultConfig {
+        applicationId "com.ice.scribe"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "0.1.0"
+
+        // 只打包 arm64：whisper 在 32 位上没有实用性，砍掉能让体积小一半
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-O3"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
+            version "3.22.1"
+        }
+    }
+
+    packaging {
+        jniLibs {
+            // ggml 的 CPU 后端是运行时按路径 dlopen 的，必须把 .so 释放到 nativeLibraryDir
+            useLegacyPackaging = true
+        }
+    }
+
+    // 零第三方依赖：只用 Android 框架 + JUnit，所以没有 dependencies 段
+    def keystoreProps = rootProject.file("keystore.properties")
+    signingConfigs {
+        release {
+            if (keystoreProps.exists()) {
+                def p = new Properties()
+                keystoreProps.withInputStream { p.load(it) }
+                storeFile rootProject.file(p['storeFile'])
+                storePassword p['storePassword']
+                keyAlias p['keyAlias']
+                keyPassword p['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            // 原生库会按字符串名回调 Java，R8 必须保留对应符号（见 proguard-rules.pro）
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig keystoreProps.exists() ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds true
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    testImplementation libs.junit
+}

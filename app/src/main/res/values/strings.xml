@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">iceScribe</string>
+    <string name="app_sub">离线语音转写 · 数据不出手机</string>
+
+    <!-- 模型 -->
+    <string name="model_hint">先导入一个 whisper 模型（.bin / .gguf），就能开始离线转写</string>
+    <string name="model_import">导入模型</string>
+    <string name="model_switch">切换模型</string>
+    <string name="model_loaded">模型已就绪</string>
+    <string name="model_loading">正在加载模型…</string>
+    <string name="model_failed">模型加载失败</string>
+    <string name="model_choose_title">选择模型</string>
+    <string name="model_delete_hint">长按可删除模型</string>
+
+    <!-- 录音 -->
+    <string name="rec_idle">点击麦克风开始录音</string>
+    <string name="rec_recording">正在录音…</string>
+    <string name="rec_tip">录音在本地完成，停止后自动转写</string>
+    <string name="rec_stop">停止</string>
+    <string name="rec_import">导入音频</string>
+    <string name="rec_permission">需要麦克风权限才能录音</string>
+
+    <!-- 转写 -->
+    <string name="stt_running">正在离线转写…</string>
+    <string name="stt_empty">还没有内容</string>
+    <string name="stt_done">转写完成 · %1$d 字</string>
+    <string name="stt_too_short">录音太短，没听到内容</string>
+    <string name="stt_copy">复制</string>
+    <string name="stt_copy_done">已复制到剪贴板</string>
+    <string name="stt_share">分享</string>
+    <string name="stt_save">保存</string>
+    <string name="stt_saved">已保存到历史记录</string>
+    <string name="stt_clear">清空</string>
+    <string name="stt_placeholder">转写结果会显示在这里，可直接编辑</string>
+
+    <!-- 选项 -->
+    <string name="opt_language">识别语言</string>
+    <string name="opt_translate">翻译成英文</string>
+    <string name="opt_threads">CPU 线程</string>
+    <string name="opt_lang_auto">自动检测</string>
+    <string name="opt_lang_zh">中文</string>
+    <string name="opt_lang_en">英文</string>
+
+    <!-- 历史 -->
+    <string name="history_title">历史记录</string>
+    <string name="history_empty">暂无历史记录</string>
+    <string name="history_clear">全部清除</string>
+    <string name="history_cleared">历史记录已清除</string>
+    <string name="history_delete">删除</string>
+
+    <!-- 通知 -->
+    <string name="notif_channel">录音</string>
+    <string name="notif_title">iceScribe 正在录音</string>
+    <string name="notif_text">返回应用即可停止并转写</string>
+
+    <!-- 通用 -->
+    <string name="cancel">取消</string>
+    <string name="confirm_delete_model">确定删除这个模型文件？</string>
+    <string name="confirm_clear_history">确定清空全部历史记录？</string>
+    <string name="err_import">导入失败</string>
+    <string name="engine_version">引擎 whisper.cpp %1$s</string>
+</resources>

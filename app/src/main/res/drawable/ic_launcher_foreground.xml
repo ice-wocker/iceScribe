@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- 五条「声波」：中间最高，像一段被转成文字的语音 -->
+    <path android:strokeColor="#99D9F5FF" android:strokeWidth="7" android:strokeLineCap="round"
+        android:pathData="M34,49 L34,59" />
+    <path android:strokeColor="#CCE8F7FF" android:strokeWidth="7" android:strokeLineCap="round"
+        android:pathData="M44,42 L44,66" />
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="7" android:strokeLineCap="round"
+        android:pathData="M54,32 L54,76" />
+    <path android:strokeColor="#CCE8F7FF" android:strokeWidth="7" android:strokeLineCap="round"
+        android:pathData="M64,40 L64,68" />
+    <path android:strokeColor="#99D9F5FF" android:strokeWidth="7" android:strokeLineCap="round"
+        android:pathData="M74,49 L74,59" />
+</vector>

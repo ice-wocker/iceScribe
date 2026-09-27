@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 录音：转写唯一的输入来源。除此之外不申请任何权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 录音期间的前台服务，让息屏/切后台也能继续录 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- 刻意不申请 INTERNET：转写全在本机跑，模型靠「导入文件」，App 根本不需要联网。
+         装完可以在系统设置里看到它没有网络权限，这是最能说明问题的隐私承诺。 -->
+
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.IceScribe">
+
+        <!-- 录音中的返回键要用来「停止并转写」，所以关掉预测式返回，
+             让系统仍然回调 onBackPressed（Android 16 起默认走新手势回调） -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:enableOnBackInvokedCallback="false"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 录音前台服务：保证息屏后仍在录 -->
+        <service
+            android:name=".rec.RecordService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
+    </application>
+
+</manifest>
