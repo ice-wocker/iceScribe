@@ -4,6 +4,8 @@
 
 **把手机变成一支离线录音笔 —— 一句话说完，文字就出来了，全程不出这台设备**
 
+> **English:** An offline voice-to-text Android app with built-in whisper.cpp. It requests no INTERNET permission and needs no account — recording and transcription never leave this device.
+
 [![Release](https://img.shields.io/github/v/release/ice-wocker/iceScribe?color=38BDF8&label=Release)](https://github.com/ice-wocker/iceScribe/releases)
 [![CI](https://github.com/ice-wocker/iceScribe/actions/workflows/android.yml/badge.svg)](https://github.com/ice-wocker/iceScribe/actions/workflows/android.yml)
 [![Stars](https://img.shields.io/github/stars/ice-wocker/iceScribe?color=38BDF8)](https://github.com/ice-wocker/iceScribe/stargazers)
@@ -194,5 +196,8 @@ cd iceScribe
 **ice-wocker** · [github.com/ice-wocker](https://github.com/ice-wocker)
 
 如果这个 App 让你少传了一次录音到云上，点个 Star 就够了。
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=ice-wocker/iceScribe&type=Date)](https://star-history.com/#ice-wocker/iceScribe&Date)
 
 </div>
