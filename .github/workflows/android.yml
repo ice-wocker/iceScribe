@@ -50,7 +50,7 @@ jobs:
 
       # 首次构建要从 GitHub 拉 whisper.cpp 源码；缓存住，后续构建快很多
       - name: Cache whisper.cpp source
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: app/.cxx
           key: whisper-cpp-${{ runner.os }}-v1.9.4-${{ hashFiles('app/src/main/cpp/CMakeLists.txt') }}
